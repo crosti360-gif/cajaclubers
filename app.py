@@ -13,11 +13,8 @@ st.set_page_config(
 # Inicialización segura de la conexión de Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Extracción de la URL del documento desde los secretos de entorno de forma segura
-try:
-    URL_DOCUMENTO = st.secrets["connections"]["gsheets"]["spreadsheet"]
-except Exception:
-    URL_DOCUMENTO = None
+# URL asignada directamente para solucionar el error de configuración de secretos
+URL_DOCUMENTO = "https://docs.google.com/spreadsheets/d/1ubonT7F9SdjH5SnXHIWCLqzsccGQfMgvN_vcsoErupA/edit?gid=0#gid=0"
 
 def inicializar_almacen_datos():
     """
@@ -437,15 +434,4 @@ elif modulo_activo == "Control de Caja":
                     try:
                         sh = conn.client._open_spreadsheet(spreadsheet=URL_DOCUMENTO)
                         ws_movimientos_manual = sh.worksheet("Movimientos")
-                        marca_temporal_manual = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        
-                        # Inserción de flujo de efectivo inmutable directa en Google Sheets
-                        ws_movimientos_manual.append_row([
-                            marca_temporal_manual, tipo_flujo_manual, detalle_flujo_manual, 
-                            float(monto_flujo_manual), "Manual", 0
-                        ])
-                        
-                        st.success("Transacción registrada con éxito en el Libro Diario.")
-                        forzar_recarga_sistema()
-                    except Exception as ex:
-                        st.error(f"Fallo al guardar el movimiento financiero manual: {ex}")
+                        marca_temporal_manual = datetime.datetime.now().
